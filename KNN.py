@@ -73,6 +73,7 @@ def KNN(user_games, distance_sorted, knn):
 	user_games_avg = dict()
 	sum_of_errors = 0
 	scores = list()
+	n = 0
 	
 	for user in user_games:
 		
@@ -105,47 +106,46 @@ def KNN(user_games, distance_sorted, knn):
 				avg = sum_of_scores/sum_of_weights
 				user_games_avg[user][bg] = {'score': user_games[user][bg], 'avg': avg, 'max_k': knn, 'count_k': k}
 				sum_of_errors += pow(user_games[user][bg] - avg, 2)
+				n += 1
 	
 	if len(scores) > 0:
 		user_games_avg[user]['mean'] = mean(scores)
 		user_games_avg[user]['median'] = median(scores)
-		user_games_avg[user]['mode'] = median(mode)
+		user_games_avg[user]['mode'] = mode(mode)
 		
-	rmse = -1 if sum_of_errors == 0 else sqrt(1/sum_of_errors)
+	rmse = -1 if sum_of_errors == 0 else sqrt(sum_of_errors)
 	
 	return (user_games_avg, rmse)
 	
-for i in range(1, 51):
+for i in range(1, 31):
 	user_games_avg, rmse = KNN(user_games, distance_sorted, i)
 	print("KNN: %d - Errors: %12.8f" % (i, rmse))
 
 
 		
-user_games_avg = dict()
-sum_of_errors = 0
-	
-for user in user_games:
-	
-	user_new_games[user] = dict()
-	
-	for bg in user_games[user]:
-		
-		sum_of_weights = 0
-		sum_of_scores = 0
-		k = 1
-		
-		for neighbour, weight in distance_sorted[user].items():
-			
-			if bg in user_games[neighbour].keys():
-				
-				sum_of_scores = user_games[neighbour][bg]*weight
-				sum_of_weights += weight
-				
-				if k >= knn:
-					break
-				else:
-					k += 1
-		
-		if sum_of_weights > 0:
-
-	
+#user_games_avg = dict()
+#sum_of_errors = 0
+#	
+#for user in user_games:
+#	
+#	user_new_games[user] = dict()
+#	
+#	for bg in user_games[user]:
+#		
+#		sum_of_weights = 0
+#		sum_of_scores = 0
+#		k = 1
+#		
+#		for neighbour, weight in distance_sorted[user].items():
+#			
+#			if bg in user_games[neighbour].keys():
+#				
+#				sum_of_scores = user_games[neighbour][bg]*weight
+#				sum_of_weights += weight
+#				
+#				if k >= knn:
+#					break
+#				else:
+#					k += 1
+#		
+#		if sum_of_weights > 0:
